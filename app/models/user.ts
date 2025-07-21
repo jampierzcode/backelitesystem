@@ -41,7 +41,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ columnName: 'rol_id' })
   declare rolId: number | null
 
-  @belongsTo(() => Role)
+  @belongsTo(() => Role, { foreignKey: 'rolId' })
   declare role: BelongsTo<typeof Role>
 
   @column()

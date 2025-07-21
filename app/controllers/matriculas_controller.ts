@@ -4,7 +4,11 @@ import type { HttpContext } from '@adonisjs/core/http'
 export default class MatriculasController {
   public async index({}: HttpContext) {
     try {
-      const matriculas = await Matricula.all()
+      const matriculas = await Matricula.query()
+        .preload('estudiante', (est) => {
+          est.preload('person')
+        })
+        .preload('ciclo')
       return {
         status: 'success',
         message: 'matriculas fetched with success',

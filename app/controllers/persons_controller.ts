@@ -47,6 +47,7 @@ export default class PersonsController {
         'tipo',
         'sedeId',
       ])
+      console.log(data)
       const person = await Person.create(data)
       return {
         status: 'success',

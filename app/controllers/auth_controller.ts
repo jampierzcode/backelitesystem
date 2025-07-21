@@ -72,7 +72,11 @@ export default class AuthController {
       return { user: data_auth }
     } else {
       // Cargar el usuario autenticado junto con el rol y el creador
-      const user = await User.query().where('id', auth.user!.id).preload('role').firstOrFail()
+      const user = await User.query()
+        .where('id', auth.user!.id)
+        .preload('role')
+        .preload('person')
+        .firstOrFail()
       // Devolver el usuario con los datos de rol y creador
       return { user }
     }
