@@ -38,7 +38,16 @@ export default class CiclosController {
 
   public async store({ request }: HttpContext) {
     try {
-      const data = request.only(['nombre', 'fechaInicio', 'fechaFin', 'status'])
+      const data = request.only([
+        'nombre',
+        'fechaInicio',
+        'fechaFin',
+        'status',
+        'montoMatriculaPresencial',
+        'montoMensualidadPresencial',
+        'montoMatriculaVirtual',
+        'montoMensualidadVirtual',
+      ])
       const ciclo = await Ciclo.create(data)
       return {
         status: 'success',
@@ -57,7 +66,16 @@ export default class CiclosController {
   public async update({ params, request }: HttpContext) {
     try {
       const ciclo = await Ciclo.findOrFail(params.id)
-      const data = request.only(['nombre', 'fechaInicio', 'fechaFin', 'status'])
+      const data = request.only([
+        'nombre',
+        'fechaInicio',
+        'fechaFin',
+        'status',
+        'montoMatriculaPresencial',
+        'montoMensualidadPresencial',
+        'montoMatriculaVirtual',
+        'montoMensualidadVirtual',
+      ])
       ciclo.merge(data)
       await ciclo.save()
       return {

@@ -86,6 +86,7 @@ export default class MatriculasController {
         data: matricula,
       }
     } catch (error) {
+      console.log(error)
       return {
         status: 'error',
         message: 'matricula update error',

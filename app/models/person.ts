@@ -1,8 +1,9 @@
 // app/models/person.ts
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import Sede from './sede.js' // Asegúrate que este modelo existe y está bien ubicado
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+import Estudiante from './estudiante.js'
 
 export default class Person extends BaseModel {
   static table = 'persons'
@@ -33,6 +34,9 @@ export default class Person extends BaseModel {
 
   @belongsTo(() => Sede)
   declare sede: BelongsTo<typeof Sede>
+
+  @hasOne(() => Estudiante, { foreignKey: 'personId' })
+  declare estudiante: HasOne<typeof Estudiante>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

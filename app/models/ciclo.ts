@@ -20,6 +20,18 @@ export default class Ciclo extends BaseModel {
   @column()
   declare status: boolean
 
+  @column({ columnName: 'montoMatriculaPresencial' })
+  declare montoMatriculaPresencial: number
+
+  @column({ columnName: 'montoMensualidadPresencial' })
+  declare montoMensualidadPresencial: number
+
+  @column({ columnName: 'montoMatriculaVirtual' })
+  declare montoMatriculaVirtual: number
+
+  @column({ columnName: 'montoMensualidadVirtual' })
+  declare montoMensualidadVirtual: number
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
