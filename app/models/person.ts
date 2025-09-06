@@ -1,8 +1,8 @@
 // app/models/person.ts
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, hasOne } from '@adonisjs/lucid/orm'
 import Sede from './sede.js' // Asegúrate que este modelo existe y está bien ubicado
-import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasOne } from '@adonisjs/lucid/types/relations'
 import Estudiante from './estudiante.js'
 
 export default class Person extends BaseModel {
