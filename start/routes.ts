@@ -20,6 +20,9 @@ import CostoPagosController from '#controllers/costos_pagos_controller'
 import EstudiantesController from '#controllers/estudiantes_controller'
 import CiclosController from '#controllers/ciclos_controller'
 import RolesController from '#controllers/roles_controller'
+import AsistenciasController from '#controllers/asistencias_controller'
+import NotasSimulacroController from '#controllers/notas_simulacros_controller'
+import ExamenesSimulacroController from '#controllers/examenes_simulacros_controller'
 
 router.get('/', async () => {
   return {
@@ -67,6 +70,38 @@ router
     router.post('/matriculas', [MatriculasController, 'store']).as('matriculas.store')
     router.put('/matriculas/:id', [MatriculasController, 'update']).as('matriculas.update')
     router.delete('/matriculas/:id', [MatriculasController, 'destroy']).as('matriculas.destroy')
+
+    router.get('/asistencias', [AsistenciasController, 'index']).as('asistencias.index')
+    router.get('/asistencias:id', [AsistenciasController, 'show']).as('asistencias.show')
+    router.post('/asistencias', [AsistenciasController, 'store']).as('asistencias.store')
+    router.put('/asistencias/:id', [AsistenciasController, 'update']).as('asistencias.update')
+    router.delete('/asistencias/:id', [AsistenciasController, 'destroy']).as('asistencias.destroy')
+
+    router.get('/notasSimulacro', [NotasSimulacroController, 'index']).as('notasSimulacro.index')
+    // router.get('/notasSimulacro:id', [NotasSimulacroController, 'show']).as('notasSimulacro.show')
+    router.post('/notasSimulacro', [NotasSimulacroController, 'store']).as('notasSimulacro.store')
+    router
+      .put('/notasSimulacro/:id', [NotasSimulacroController, 'update'])
+      .as('notasSimulacro.update')
+    router
+      .delete('/notasSimulacro/:id', [NotasSimulacroController, 'destroy'])
+      .as('notasSimulacro.destroy')
+
+    router
+      .get('/examenesSimulacro', [ExamenesSimulacroController, 'index'])
+      .as('examenesSimulacro.index')
+    router
+      .get('/examenesSimulacro:id', [ExamenesSimulacroController, 'show'])
+      .as('examenesSimulacro.show')
+    router
+      .post('/examenesSimulacro', [ExamenesSimulacroController, 'store'])
+      .as('examenesSimulacro.store')
+    router
+      .put('/examenesSimulacro/:id', [ExamenesSimulacroController, 'update'])
+      .as('examenesSimulacro.update')
+    router
+      .delete('/examenesSimulacro/:id', [ExamenesSimulacroController, 'destroy'])
+      .as('examenesSimulacro.destroy')
 
     router.get('/estudiantes', [EstudiantesController, 'index']).as('estudiantes.index')
     router.get('/estudiantes/:id', [EstudiantesController, 'show']).as('estudiantes.show')

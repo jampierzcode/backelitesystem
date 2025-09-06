@@ -4,7 +4,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 export default class EstudiantesController {
   public async index({}: HttpContext) {
     try {
-      const estudiantes = await Estudiante.all()
+      const estudiantes = await Estudiante.query().preload('person')
       return {
         status: 'success',
         message: 'estudiantes fetched with success',
