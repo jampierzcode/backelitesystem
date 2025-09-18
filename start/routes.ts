@@ -23,6 +23,8 @@ import RolesController from '#controllers/roles_controller'
 import AsistenciasController from '#controllers/asistencias_controller'
 import NotasSimulacroController from '#controllers/notas_simulacros_controller'
 import ExamenesSimulacroController from '#controllers/examenes_simulacros_controller'
+import SedesController from '#controllers/sedes_controller'
+import SchedulesController from '#controllers/schedules_controller'
 
 router.get('/', async () => {
   return {
@@ -130,6 +132,18 @@ router
     router.post('/ciclos', [CiclosController, 'store']).as('ciclos.store')
     router.put('/ciclos/:id', [CiclosController, 'update']).as('ciclos.update')
     router.delete('/ciclos/:id', [CiclosController, 'destroy']).as('ciclos.destroy')
+
+    router.get('/schedules', [SchedulesController, 'index']).as('schedules.index')
+    router.get('/schedules/:id', [SchedulesController, 'show']).as('schedules.show')
+    router.post('/schedules', [SchedulesController, 'store']).as('schedules.store')
+    router.put('/schedules/:id', [SchedulesController, 'update']).as('schedules.update')
+    router.delete('/schedules/:id', [SchedulesController, 'destroy']).as('schedules.destroy')
+
+    router.get('/sedes', [SedesController, 'index']).as('sedes.index')
+    router.get('/sedes/:id', [SedesController, 'show']).as('sedes.show')
+    router.post('/sedes', [SedesController, 'store']).as('sedes.store')
+    router.put('/sedes/:id', [SedesController, 'update']).as('sedes.update')
+    router.delete('/sedes/:id', [SedesController, 'destroy']).as('sedes.destroy')
   })
   .prefix('/api')
   .use(middleware.auth({ guards: ['api'] }))
