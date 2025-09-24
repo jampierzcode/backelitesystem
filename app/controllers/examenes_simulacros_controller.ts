@@ -8,8 +8,15 @@ export default class ExamenesSimulacroController {
   }
 
   public async show({ params, response }: HttpContext) {
-    const examen = await ExamenSimulacro.findOrFail(params.id)
-    await examen.load('notas')
+    const examen = await ExamenSimulacro.query()
+      .where('id', params.id)
+      .preload('notas', (notaQuery) => {
+        notaQuery.preload('estudiante', (estQuery) => {
+          estQuery.preload('person')
+        })
+      })
+      .firstOrFail()
+
     return response.json(examen)
   }
 
@@ -17,8 +24,8 @@ export default class ExamenesSimulacroController {
     const data = request.only([
       'estado',
       'fecha',
-      'hora_inicio',
-      'hora_fin',
+      'horaInicio',
+      'horaFin',
       'fecha_reprogramacion',
       'documento_url',
       'canal',
@@ -32,8 +39,8 @@ export default class ExamenesSimulacroController {
     const data = request.only([
       'estado',
       'fecha',
-      'hora_inicio',
-      'hora_fin',
+      'horaInicio',
+      'horaFin',
       'fecha_reprogramacion',
       'documento_url',
       'canal',

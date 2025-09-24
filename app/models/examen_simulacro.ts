@@ -14,11 +14,11 @@ export default class ExamenSimulacro extends BaseModel {
   @column.date()
   declare public fecha: DateTime
 
-  @column.dateTime({ serializeAs: 'hora_inicio' })
-  public horaInicio?: DateTime | null
+  @column({ columnName: 'hora_inicio' })
+  public horaInicio?: string | null
 
-  @column.dateTime({ serializeAs: 'hora_fin' })
-  public horaFin?: DateTime | null
+  @column({ columnName: 'hora_fin' })
+  public horaFin?: string | null
 
   @column.date()
   declare public fechaReprogramacion?: DateTime | null
@@ -35,6 +35,6 @@ export default class ExamenSimulacro extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare public updatedAt: DateTime
 
-  @hasMany(() => NotaSimulacro)
+  @hasMany(() => NotaSimulacro, { foreignKey: 'examenId' })
   declare public notas: HasMany<typeof NotaSimulacro>
 }

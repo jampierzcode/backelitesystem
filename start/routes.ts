@@ -93,7 +93,7 @@ router
       .get('/examenesSimulacro', [ExamenesSimulacroController, 'index'])
       .as('examenesSimulacro.index')
     router
-      .get('/examenesSimulacro:id', [ExamenesSimulacroController, 'show'])
+      .get('/examenesSimulacro/:id', [ExamenesSimulacroController, 'show'])
       .as('examenesSimulacro.show')
     router
       .post('/examenesSimulacro', [ExamenesSimulacroController, 'store'])
