@@ -27,11 +27,11 @@ export default class Asistencia extends BaseModel {
   @column.date() // 👈 Para tipo DATE en DB
   declare public fecha: DateTime
 
-  @column.dateTime({ columnName: 'hora_entrada' })
-  declare horaEntrada: DateTime | null
+  @column({ columnName: 'hora_entrada' })
+  declare horaEntrada: string | null
 
-  @column.dateTime({ columnName: 'hora_salida' })
-  declare horaSalida: DateTime | null
+  @column({ columnName: 'hora_salida' })
+  declare horaSalida: string | null
 
   @column()
   declare estado: 'presente' | 'tardanza' | 'falta' | 'justificada'
