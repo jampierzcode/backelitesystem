@@ -51,7 +51,8 @@ export default class SedesController {
         'department',
         'province',
         'district',
-      ]) // Asume que estos campos existen
+        'googleMapsUrl',
+      ])
       const sede = await Sede.create(data)
 
       return {
@@ -78,7 +79,8 @@ export default class SedesController {
         'department',
         'province',
         'district',
-      ]) // Asume que estos campos existen
+        'googleMapsUrl',
+      ])
       sede.merge(data)
       await sede.save()
 

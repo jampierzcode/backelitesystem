@@ -1,11 +1,13 @@
 // app/models/matricula.ts
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 
 import Estudiante from './estudiante.js'
 import Ciclo from './ciclo.js'
+import CuotaMatricula from './cuota_matricula.js'
+import Turno from './turno.js'
 
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 
 export default class Matricula extends BaseModel {
   static table = 'matriculas'
@@ -28,8 +30,11 @@ export default class Matricula extends BaseModel {
   @column()
   declare modalidad: 'presencial' | 'virtual'
 
-  @column()
-  declare turno: 'MAÑANA' | 'TARDE'
+  @column({ columnName: 'turno_id' })
+  declare turnoId: number | null
+
+  @belongsTo(() => Turno)
+  declare turno: BelongsTo<typeof Turno>
 
   @column({ columnName: 'precio_matricula' })
   declare precioMatricula: number
@@ -39,6 +44,15 @@ export default class Matricula extends BaseModel {
 
   @column()
   declare estado: 'pendiente' | 'matriculado'
+
+  @column.date({ columnName: 'fecha_inicio' })
+  declare fechaInicio: DateTime | null
+
+  @column.date({ columnName: 'fecha_fin' })
+  declare fechaFin: DateTime | null
+
+  @hasMany(() => CuotaMatricula, { foreignKey: 'matriculaId' })
+  declare cuotas: HasMany<typeof CuotaMatricula>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -27,7 +27,7 @@ export default class Person extends BaseModel {
   declare email: string | null
 
   @column()
-  declare tipo: 'estudiante' | 'profesor' | 'secretaria' | 'admin'
+  declare tipo: 'estudiante' | 'profesor' | 'secretaria'
 
   @column({ columnName: 'sede_id' })
   declare sedeId: number | null

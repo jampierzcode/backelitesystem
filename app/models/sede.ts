@@ -20,6 +20,9 @@ export default class Sede extends BaseModel {
   @column()
   declare district: string
 
+  @column({ columnName: 'google_maps_url' })
+  declare googleMapsUrl: string | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

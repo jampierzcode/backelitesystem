@@ -2,6 +2,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import Matricula from './matricula.js'
+import CuotaMatricula from './cuota_matricula.js'
 
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
@@ -17,6 +18,12 @@ export default class Pago extends BaseModel {
   @belongsTo(() => Matricula)
   declare matricula: BelongsTo<typeof Matricula>
 
+  @column({ columnName: 'cuota_id' })
+  declare cuotaId: number | null
+
+  @belongsTo(() => CuotaMatricula, { foreignKey: 'cuotaId' })
+  declare cuota: BelongsTo<typeof CuotaMatricula>
+
   @column()
   declare tipo: 'matricula' | 'mensualidad'
 
@@ -31,6 +38,9 @@ export default class Pago extends BaseModel {
 
   @column()
   declare imagenVoucherUrl: string | null
+
+  @column({ columnName: 'imagen_voucher_key' })
+  declare imagenVoucherKey: string | null
 
   @column()
   declare estado: 'pendiente' | 'validado' | 'rechazado'

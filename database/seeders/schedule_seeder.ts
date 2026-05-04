@@ -17,8 +17,8 @@ export default class ScheduleSeeder extends BaseSeeder {
       days.map((day) => {
         return {
           dia: day,
-          hora_inicio: '09:00:00',
-          hora_fin: '18:00:00',
+          horaInicio: '09:00:00',
+          horaFin: '18:00:00',
           activo: true,
         }
       })

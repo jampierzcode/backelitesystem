@@ -25,6 +25,23 @@ import NotasSimulacroController from '#controllers/notas_simulacros_controller'
 import ExamenesSimulacroController from '#controllers/examenes_simulacros_controller'
 import SedesController from '#controllers/sedes_controller'
 import SchedulesController from '#controllers/schedules_controller'
+import CursosController from '#controllers/cursos_controller'
+import ProfesoresController from '#controllers/profesores_controller'
+import ClasesProfesorController from '#controllers/clases_profesor_controller'
+import ContratosController from '#controllers/contratos_controller'
+import CuotasController from '#controllers/cuotas_controller'
+import ApoderadosController from '#controllers/apoderados_controller'
+import ExcepcionesHorarioController from '#controllers/excepciones_horario_controller'
+import HorariosController from '#controllers/horarios_controller'
+import PoliticasAsistenciaController from '#controllers/politicas_asistencia_controller'
+import SolicitudesMatriculaController from '#controllers/solicitudes_matricula_controller'
+import SolicitudesMatriculaPublicasController from '#controllers/solicitudes_matricula_publicas_controller'
+import NotificacionesController from '#controllers/notificaciones_controller'
+import UploadsController from '#controllers/uploads_controller'
+import ConfiguracionController from '#controllers/configuracion_controller'
+import MetodosPagoImagenesController from '#controllers/metodos_pago_imagenes_controller'
+import TurnosController from '#controllers/turnos_controller'
+import transmit from '@adonisjs/transmit/services/main'
 
 router.get('/', async () => {
   return {
@@ -35,6 +52,22 @@ router.post('/api/register', [AuthController, 'register']).as('auth.register')
 router.post('/api/newuser', [AuthController, 'createUser']).as('auth.createUser')
 
 router.post('/api/login', [AuthController, 'login']).as('auth.login')
+
+// === Endpoints públicos (sin auth) para el sitio de matrícula ===
+router
+  .group(() => {
+    router.get('/ciclos', [SolicitudesMatriculaPublicasController, 'ciclos'])
+    router.get('/sedes', [SolicitudesMatriculaPublicasController, 'sedes'])
+    router.post('/solicitudes-matricula', [
+      SolicitudesMatriculaPublicasController,
+      'store',
+    ])
+    router.post('/uploads/comprobante', [UploadsController, 'comprobantePublico'])
+    router.get('/configuracion', [ConfiguracionController, 'showPublico'])
+    router.get('/metodos-pago-imagenes', [MetodosPagoImagenesController, 'indexPublico'])
+    router.get('/turnos', [TurnosController, 'indexPublico'])
+  })
+  .prefix('/api/public')
 
 // Grupo protegido
 router
@@ -74,7 +107,16 @@ router
     router.delete('/matriculas/:id', [MatriculasController, 'destroy']).as('matriculas.destroy')
 
     router.get('/asistencias', [AsistenciasController, 'index']).as('asistencias.index')
-    router.get('/asistencias:id', [AsistenciasController, 'show']).as('asistencias.show')
+    router
+      .get('/asistencias/sin-marcar-hoy', [AsistenciasController, 'sinMarcarHoy'])
+      .as('asistencias.sinMarcarHoy')
+    router
+      .post('/asistencias/marcar-qr', [AsistenciasController, 'marcarQr'])
+      .as('asistencias.marcarQr')
+    router
+      .post('/asistencias/marcar-falta-masiva', [AsistenciasController, 'marcarFaltaMasiva'])
+      .as('asistencias.marcarFaltaMasiva')
+    router.get('/asistencias/:id', [AsistenciasController, 'show']).as('asistencias.show')
     router.post('/asistencias', [AsistenciasController, 'store']).as('asistencias.store')
     router.put('/asistencias/:id', [AsistenciasController, 'update']).as('asistencias.update')
     router.delete('/asistencias/:id', [AsistenciasController, 'destroy']).as('asistencias.destroy')
@@ -144,6 +186,134 @@ router
     router.post('/sedes', [SedesController, 'store']).as('sedes.store')
     router.put('/sedes/:id', [SedesController, 'update']).as('sedes.update')
     router.delete('/sedes/:id', [SedesController, 'destroy']).as('sedes.destroy')
+
+    router.get('/cursos', [CursosController, 'index']).as('cursos.index')
+    router.get('/cursos/:id', [CursosController, 'show']).as('cursos.show')
+    router.post('/cursos', [CursosController, 'store']).as('cursos.store')
+    router.put('/cursos/:id', [CursosController, 'update']).as('cursos.update')
+    router.delete('/cursos/:id', [CursosController, 'destroy']).as('cursos.destroy')
+
+    router.get('/profesores', [ProfesoresController, 'index']).as('profesores.index')
+    router.get('/profesores/:id', [ProfesoresController, 'show']).as('profesores.show')
+    router.post('/profesores', [ProfesoresController, 'store']).as('profesores.store')
+    router.put('/profesores/:id', [ProfesoresController, 'update']).as('profesores.update')
+    router.delete('/profesores/:id', [ProfesoresController, 'destroy']).as('profesores.destroy')
+
+    router.get('/clases-profesor', [ClasesProfesorController, 'index']).as('clasesProfesor.index')
+    router.get('/clases-profesor/:id', [ClasesProfesorController, 'show']).as('clasesProfesor.show')
+    router.post('/clases-profesor', [ClasesProfesorController, 'store']).as('clasesProfesor.store')
+    router
+      .put('/clases-profesor/:id', [ClasesProfesorController, 'update'])
+      .as('clasesProfesor.update')
+    router
+      .delete('/clases-profesor/:id', [ClasesProfesorController, 'destroy'])
+      .as('clasesProfesor.destroy')
+
+    router.get('/contratos', [ContratosController, 'index']).as('contratos.index')
+    router.get('/contratos/:id', [ContratosController, 'show']).as('contratos.show')
+    router.post('/contratos', [ContratosController, 'store']).as('contratos.store')
+    router.put('/contratos/:id', [ContratosController, 'update']).as('contratos.update')
+    router.delete('/contratos/:id', [ContratosController, 'destroy']).as('contratos.destroy')
+    router
+      .get('/contratos/:id/archivo', [ContratosController, 'download'])
+      .as('contratos.download')
+
+    router.get('/cuotas', [CuotasController, 'index']).as('cuotas.index')
+    router.get('/cuotas/:id', [CuotasController, 'show']).as('cuotas.show')
+
+    router.get('/apoderados', [ApoderadosController, 'index']).as('apoderados.index')
+    router.get('/apoderados/:id', [ApoderadosController, 'show']).as('apoderados.show')
+    router.post('/apoderados', [ApoderadosController, 'store']).as('apoderados.store')
+    router.put('/apoderados/:id', [ApoderadosController, 'update']).as('apoderados.update')
+    router.delete('/apoderados/:id', [ApoderadosController, 'destroy']).as('apoderados.destroy')
+
+    router
+      .get('/excepciones-horario', [ExcepcionesHorarioController, 'index'])
+      .as('excepcionesHorario.index')
+    router
+      .get('/excepciones-horario/:id', [ExcepcionesHorarioController, 'show'])
+      .as('excepcionesHorario.show')
+    router
+      .post('/excepciones-horario', [ExcepcionesHorarioController, 'store'])
+      .as('excepcionesHorario.store')
+    router
+      .put('/excepciones-horario/:id', [ExcepcionesHorarioController, 'update'])
+      .as('excepcionesHorario.update')
+    router
+      .delete('/excepciones-horario/:id', [ExcepcionesHorarioController, 'destroy'])
+      .as('excepcionesHorario.destroy')
+
+    router
+      .get('/horarios/operativo-actual', [HorariosController, 'operativoActual'])
+      .as('horarios.operativoActual')
+
+    router
+      .get('/politicas-asistencia', [PoliticasAsistenciaController, 'index'])
+      .as('politicasAsistencia.index')
+    router
+      .get('/politicas-asistencia/:id', [PoliticasAsistenciaController, 'show'])
+      .as('politicasAsistencia.show')
+    router
+      .post('/politicas-asistencia', [PoliticasAsistenciaController, 'store'])
+      .as('politicasAsistencia.store')
+    router
+      .put('/politicas-asistencia/:id', [PoliticasAsistenciaController, 'update'])
+      .as('politicasAsistencia.update')
+    router
+      .delete('/politicas-asistencia/:id', [PoliticasAsistenciaController, 'destroy'])
+      .as('politicasAsistencia.destroy')
+
+    router
+      .get('/solicitudes-matricula', [SolicitudesMatriculaController, 'index'])
+      .as('solicitudesMatricula.index')
+    router
+      .get('/solicitudes-matricula/:id', [SolicitudesMatriculaController, 'show'])
+      .as('solicitudesMatricula.show')
+    router
+      .post('/solicitudes-matricula/:id/aprobar', [SolicitudesMatriculaController, 'aprobar'])
+      .as('solicitudesMatricula.aprobar')
+    router
+      .post('/solicitudes-matricula/:id/rechazar', [SolicitudesMatriculaController, 'rechazar'])
+      .as('solicitudesMatricula.rechazar')
+
+    router
+      .get('/notificaciones', [NotificacionesController, 'index'])
+      .as('notificaciones.index')
+    router
+      .post('/notificaciones/:id/leer', [NotificacionesController, 'marcarLeida'])
+      .as('notificaciones.leer')
+    router
+      .post('/notificaciones/leer-todas', [NotificacionesController, 'marcarTodasLeidas'])
+      .as('notificaciones.leerTodas')
+
+    router.post('/uploads/voucher', [UploadsController, 'voucher']).as('uploads.voucher')
+    router
+      .get('/uploads/url-firmada', [UploadsController, 'urlFirmada'])
+      .as('uploads.urlFirmada')
+
+    router.get('/configuracion', [ConfiguracionController, 'show']).as('configuracion.show')
+    router.put('/configuracion', [ConfiguracionController, 'update']).as('configuracion.update')
+
+    router
+      .get('/metodos-pago-imagenes', [MetodosPagoImagenesController, 'index'])
+      .as('metodosPagoImagenes.index')
+    router
+      .post('/metodos-pago-imagenes', [MetodosPagoImagenesController, 'store'])
+      .as('metodosPagoImagenes.store')
+    router
+      .put('/metodos-pago-imagenes/:id', [MetodosPagoImagenesController, 'update'])
+      .as('metodosPagoImagenes.update')
+    router
+      .delete('/metodos-pago-imagenes/:id', [MetodosPagoImagenesController, 'destroy'])
+      .as('metodosPagoImagenes.destroy')
+
+    router.get('/turnos', [TurnosController, 'index']).as('turnos.index')
+    router.post('/turnos', [TurnosController, 'store']).as('turnos.store')
+    router.put('/turnos/:id', [TurnosController, 'update']).as('turnos.update')
+    router.delete('/turnos/:id', [TurnosController, 'destroy']).as('turnos.destroy')
   })
   .prefix('/api')
   .use(middleware.auth({ guards: ['api'] }))
+
+// Endpoints SSE de Transmit (notificaciones realtime)
+transmit.registerRoutes()

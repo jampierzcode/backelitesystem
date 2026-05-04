@@ -27,5 +27,25 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_PORT: Env.schema.number(),
   DB_USER: Env.schema.string(),
   DB_PASSWORD: Env.schema.string.optional(),
-  DB_DATABASE: Env.schema.string()
+  DB_DATABASE: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Storage S3-compatible (Tigris / T3)
+  |----------------------------------------------------------
+  */
+  STORAGE_ENDPOINT: Env.schema.string.optional(),
+  STORAGE_REGION: Env.schema.string.optional(),
+  STORAGE_BUCKET: Env.schema.string.optional(),
+  STORAGE_ACCESS_KEY: Env.schema.string.optional(),
+  STORAGE_SECRET_KEY: Env.schema.string.optional(),
+  STORAGE_PUBLIC_BASE_URL: Env.schema.string.optional(),
+
+  /*
+  |----------------------------------------------------------
+  | Bot de WhatsApp (apiBotElite)
+  |----------------------------------------------------------
+  */
+  BOT_WHATSAPP_URL: Env.schema.string.optional(),
+  BOT_INTERNAL_TOKEN: Env.schema.string.optional(),
 })
