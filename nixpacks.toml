@@ -1,0 +1,5 @@
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[start]
+cmd = "node build/bin/server.js"
