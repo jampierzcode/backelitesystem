@@ -1,12 +1,9 @@
 import Contrato from '#models/contrato'
 import db from '@adonisjs/lucid/services/db'
-import app from '@adonisjs/core/services/app'
-import { cuid } from '@adonisjs/core/helpers'
-import { existsSync } from 'node:fs'
-import { unlink } from 'node:fs/promises'
+import { uploadFile, generarUrlFirmada, deleteFile } from '#services/storage_service'
 import type { HttpContext } from '@adonisjs/core/http'
 
-const STORAGE_DIR = 'storage/contratos'
+const STORAGE_FOLDER = 'contratos'
 const ALLOWED_EXT = ['pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx']
 
 export default class ContratosController {
@@ -122,9 +119,9 @@ export default class ContratosController {
       }
 
       const archivoFields = await this.handleFileUpload(request)
-      // Si vino un nuevo archivo, borrar el anterior
+      // Si vino un nuevo archivo, borrar el anterior del bucket
       if (archivoFields.archivoPath && contrato.archivoPath) {
-        await this.deleteFileIfExists(contrato.archivoPath)
+        await deleteFile(contrato.archivoPath)
       }
 
       contrato.merge({ ...data, ...archivoFields })
@@ -142,7 +139,7 @@ export default class ContratosController {
     try {
       const contrato = await Contrato.findOrFail(params.id)
       if (contrato.archivoPath) {
-        await this.deleteFileIfExists(contrato.archivoPath)
+        await deleteFile(contrato.archivoPath)
       }
       await contrato.delete()
       return { status: 'success', message: 'contrato deleted', data: { id: contrato.id } }
@@ -152,7 +149,8 @@ export default class ContratosController {
   }
 
   /**
-   * Descarga el archivo del contrato. Auth via middleware del grupo.
+   * Descarga el archivo del contrato vía presigned URL del bucket.
+   * Hace redirect 302 para no romper el contrato actual del front.
    */
   public async download({ params, response }: HttpContext) {
     try {
@@ -160,13 +158,8 @@ export default class ContratosController {
       if (!contrato.archivoPath) {
         return response.notFound({ status: 'error', message: 'contrato sin archivo' })
       }
-      const filePath = app.makePath(STORAGE_DIR, contrato.archivoPath)
-      if (!existsSync(filePath)) {
-        return response.notFound({ status: 'error', message: 'archivo no encontrado en disco' })
-      }
-      const downloadName = contrato.archivoNombre || contrato.archivoPath
-      response.header('Content-Disposition', `attachment; filename="${downloadName}"`)
-      return response.download(filePath)
+      const url = await generarUrlFirmada(contrato.archivoPath)
+      return response.redirect(url)
     } catch (error) {
       return response.internalServerError({ status: 'error', message: 'download error', error })
     }
@@ -180,22 +173,10 @@ export default class ContratosController {
     if (!file.isValid) {
       throw new Error(`Archivo inválido: ${file.errors.map((e) => e.message).join(', ')}`)
     }
-    const newName = `${cuid()}.${file.extname}`
-    await file.move(app.makePath(STORAGE_DIR), { name: newName, overwrite: false })
+    const result = await uploadFile(file, STORAGE_FOLDER)
     return {
-      archivoNombre: file.clientName,
-      archivoPath: newName,
-    }
-  }
-
-  private async deleteFileIfExists(relativePath: string) {
-    const fullPath = app.makePath(STORAGE_DIR, relativePath)
-    if (existsSync(fullPath)) {
-      try {
-        await unlink(fullPath)
-      } catch {
-        // ignore
-      }
+      archivoNombre: result.filename,
+      archivoPath: result.key,
     }
   }
 }

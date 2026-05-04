@@ -3,6 +3,9 @@ node_modules
 build
 tmp
 
+# Local storage (uploads van al bucket S3, no a disco)
+storage
+
 # Secrets
 .env
 .env.local

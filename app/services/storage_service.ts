@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import env from '#start/env'
 import { cuid } from '@adonisjs/core/helpers'
@@ -106,6 +106,20 @@ export async function generarUrlFirmada(
     new GetObjectCommand({ Bucket: bucket, Key: key }),
     { expiresIn: expiresSeconds }
   )
+}
+
+/**
+ * Elimina un objeto del bucket. No falla si la key no existe.
+ */
+export async function deleteFile(key: string): Promise<void> {
+  if (!key) return
+  const bucket = env.get('STORAGE_BUCKET')!
+  if (!bucket) throw new Error('STORAGE_BUCKET no configurado')
+  try {
+    await getClient().send(new DeleteObjectCommand({ Bucket: bucket, Key: key }))
+  } catch {
+    // ignore — borrar es best-effort
+  }
 }
 
 export const STORAGE_LIMITS = {
